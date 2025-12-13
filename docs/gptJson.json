@@ -1,0 +1,196 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Custom Database Connector API",
+        "version": "1.0.0",
+        "description": "API for connecting to a user-specified database and executing SQL queries. Supports PostgreSQL and MySQL, with default ports 5432 and 3306 respectively if not specified. Queries must be compliant with the database type."
+    },
+    "servers": [
+        {
+            "url": "https://rexdb.hosting.tigzig.com",
+            "description": "Main API server"
+        }
+    ],
+    "paths": {
+        "/connect-db/": {
+            "get": {
+                "summary": "Connect to Database and Execute Query",
+                "operationId": "connect_db_get",
+                "description": "Connect to a user-specified database and execute the provided SQL query. Ensure queries are compliant with the database type (PostgreSQL or MySQL). For PostgreSQL, use the provided schema or default to 'public'. Wait up to 180 seconds for a response.",
+                "parameters": [
+                    {
+                        "name": "host",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Host for the database connection."
+                    },
+                    {
+                        "name": "database",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Database name for the connection."
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "User name for the database connection."
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Password for the database connection. Optional if not required."
+                    },
+                    {
+                        "name": "sqlquery",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uri-component"
+                        },
+                        "description": "SQL query string based on the user's question. Ensure proper URI encoding for special characters."
+                    },
+                    {
+                        "name": "port",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "default": 5432
+                        },
+                        "description": "Port for the database connection. Defaults to 5432 for PostgreSQL and 3306 for MySQL if not specified."
+                    },
+                    {
+                        "name": "db_type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "postgresql",
+                                "mysql"
+                            ]
+                        },
+                        "description": "Database type ('postgresql' or 'mysql')."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "description": "Indicates the status of the request, e.g., 'success' or 'Query executed successfully'."
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A descriptive message about the result."
+                                        },
+                                        "connection_details": {
+                                            "type": "object",
+                                            "description": "Details of the connection, returned on successful connection test.",
+                                            "properties": {
+                                                "host": {
+                                                    "type": "string"
+                                                },
+                                                "database": {
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "type": "string"
+                                                },
+                                                "db_type": {
+                                                    "type": "string"
+                                                },
+                                                "port": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "description": "The result of a SELECT SQL query, formatted as pipe-delimited text."
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HTTPValidationError": {
+                "title": "HTTP Validation Error",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
+            "ValidationError": {
+                "title": "Validation Error",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "loc": {
+                        "title": "Location",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
