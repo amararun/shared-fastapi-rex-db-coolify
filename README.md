@@ -157,3 +157,9 @@ Core: fastapi, uvicorn, psycopg2-binary, mysql-connector-python, polars, pandas,
 
 ---
 Built by Amar Harolikar
+
+## Author
+
+Built by [Amar Harolikar](https://www.linkedin.com/in/amarharolikar/)
+
+Explore 30+ open source AI tools for analytics, databases & automation at [tigzig.com](https://tigzig.com)
