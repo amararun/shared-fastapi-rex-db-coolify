@@ -1,3 +1,5 @@
+> **Note**: This repository is a working example of the concept described below. It may not yet include all recommended security hardening measures. My newer repositories now have robust security at both frontend and backend layers — rate limiting, SQL validation, concurrency controls, error sanitization, and more. You can use this repo to understand the core concept, but please apply security best practices before deploying to production. See my [80+ item Security Checklist](https://tigzig.com/security) and [live hardened examples](https://tigzig.com/security-examples) for reference.
+
 # FastAPI Database Backend
 
 FastAPI server for connecting LLMs, AI tools, or frontends to PostgreSQL and MySQL databases. Handles large file uploads (tested up to 1.6GB compressed).
